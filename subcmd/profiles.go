@@ -11,6 +11,7 @@ type ProfilesCmd struct {
 }
 
 func (cmd *ProfilesCmd) Run(ctx *demitas2.Context) error {
+	fmt.Printf("# conf-dir: %s\n", ctx.DefinitionOpts.ConfDir)
 	files, err := ioutil.ReadDir(ctx.DefinitionOpts.ExpandConfDir())
 
 	if err != nil {
