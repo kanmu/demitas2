@@ -1,6 +1,6 @@
 # demitas2
 
-[![build](https://github.com/winebarrel/kasa/actions/workflows/build.yml/badge.svg)](https://github.com/winebarrel/kasa/actions/workflows/build.yml)
+[![build](https://github.com/winebarrel/demitas2/actions/workflows/build.yml/badge.svg)](https://github.com/winebarrel/demitas2/actions/workflows/build.yml)
 
 ## Usage
 
