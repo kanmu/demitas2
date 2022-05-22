@@ -5,16 +5,16 @@ import (
 	"log"
 
 	"github.com/winebarrel/demitas2"
-	"github.com/winebarrel/demitas2/definition"
 )
 
 type RunCmd struct {
+	Profile string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
 	Command string `help:"Command to run on a container."`
 	Image   string `help:"Container image."`
 }
 
 func (cmd *RunCmd) Run(ctx *demitas2.Context) error {
-	def, err := definition.Load(ctx.DefinitionOpts, cmd.Command, cmd.Image)
+	def, err := ctx.DefinitionOpts.Load(cmd.Profile, cmd.Command, cmd.Image)
 
 	if err != nil {
 		return err

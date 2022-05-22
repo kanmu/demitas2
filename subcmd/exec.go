@@ -10,12 +10,12 @@ import (
 	"time"
 
 	"github.com/winebarrel/demitas2"
-	"github.com/winebarrel/demitas2/definition"
 	"github.com/winebarrel/demitas2/utils"
 	"go.uber.org/atomic"
 )
 
 type ExecCmd struct {
+	Profile      string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
 	Command      string `evn:"DMTS_EXEC_COMMAND" required:"" default:"bash" help:"Command to run on a container."`
 	Image        string `env:"DMTS_EXEC_IMAGE" default:"public.ecr.aws/lts/ubuntu:latest" help:"Container image."`
 	UseTaskImage bool   `env:"DMTS_EXEC_USE_TASK_IMAGE" help:"Use task definition image."`
@@ -29,7 +29,7 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 		image = ""
 	}
 
-	def, err := definition.Load(ctx.DefinitionOpts, "sleep infinity", image)
+	def, err := ctx.DefinitionOpts.Load(cmd.Profile, "sleep infinity", image)
 
 	if err != nil {
 		return err

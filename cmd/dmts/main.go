@@ -25,6 +25,7 @@ var cli struct {
 	Run                subcmd.RunCmd                `cmd:"" help:"Run ECS task."`
 	Exec               subcmd.ExecCmd               `cmd:"" help:"Run ECS task and execute a command on a container."`
 	PortForward        subcmd.PortForwardCmd        `cmd:"" help:"Forward a local port to a container."`
+	Profiles           subcmd.ProfilesCmd           `cmd:"" help:"List profiles."`
 	InstallCompletions kongplete.InstallCompletions `cmd:"" help:"Install shell completions"`
 }
 

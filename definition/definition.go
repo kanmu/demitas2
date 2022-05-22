@@ -10,7 +10,6 @@ import (
 
 type DefinitionOpts struct {
 	ConfDir            string `env:"DMTS_CONF_DIR" short:"d" required:"" default:"~/.demitas" help:"Config file base dir."`
-	Profile            string `env:"DMTS_PROFILE" short:"p" required:"" help:"Config profile dir."`
 	Config             string `env:"ECSPRESSO_CONF" required:"" default:"ecspresso.yml" help:"ecspresso config file name."`
 	ContainerDef       string `env:"DMTS_CONT_DEF" required:"" default:"ecs-container-def.jsonnet" help:"ECS container definition file name."`
 	ConfigOverrides    string `short:"e" help:"JSON/YAML string that overrides ecspresso config."`
@@ -25,14 +24,18 @@ type Definition struct {
 	Task            *TaskDefinition
 }
 
-func Load(opts *DefinitionOpts, command string, image string) (*Definition, error) {
+func (opts *DefinitionOpts) ExpandConfDir() string {
 	confDir, err := tilde.Expand(opts.ConfDir)
 
 	if err != nil {
 		panic(err)
 	}
 
-	confDir = filepath.Join(confDir, opts.Profile)
+	return confDir
+}
+
+func (opts *DefinitionOpts) Load(profile string, command string, image string) (*Definition, error) {
+	confDir := filepath.Join(opts.ExpandConfDir(), profile)
 	ecspressoConf, err := loadEcsecspressoConf(confDir, opts)
 
 	if err != nil {

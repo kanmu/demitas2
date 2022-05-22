@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
 	"github.com/winebarrel/demitas2"
-	"github.com/winebarrel/demitas2/definition"
 	"github.com/winebarrel/demitas2/utils"
 	"go.uber.org/atomic"
 )
@@ -21,6 +20,7 @@ const (
 )
 
 type PortForwardCmd struct {
+	Profile    string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
 	RemoteHost string `required:"" short:"H" help:"Remote host."`
 	RemotePort uint   `required:"" short:"r"  help:"Remote port."`
 	LocalPort  uint   `required:"" short:"l"  help:"Local port."`
@@ -28,7 +28,7 @@ type PortForwardCmd struct {
 
 func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 	command := fmt.Sprintf("%s:%d %d", cmd.RemoteHost, cmd.RemotePort, cmd.RemotePort)
-	def, err := definition.Load(ctx.DefinitionOpts, command, StoneImage)
+	def, err := ctx.DefinitionOpts.Load(cmd.Profile, command, StoneImage)
 
 	if err != nil {
 		return err
