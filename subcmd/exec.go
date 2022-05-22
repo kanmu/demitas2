@@ -115,29 +115,25 @@ Task stop command:
 	return cmd.executeShellCommand(cluster, taskID, cmd.Command)
 }
 
-func (cmd *ExecCmd) executeCommand(cluster string, taskID string, command string) error {
-	cmdWithArgs := []string{
+func (cmd *ExecCmd) buildExecuteCommand(cluster string, taskID string, command string) []string {
+	return []string{
 		"aws", "ecs", "execute-command",
 		"--cluster", cluster,
 		"--task", taskID,
 		"--interactive",
 		"--command", command,
 	}
+}
 
+func (cmd *ExecCmd) executeCommand(cluster string, taskID string, command string) error {
+	cmdWithArgs := cmd.buildExecuteCommand(cluster, taskID, command)
 	_, _, err := utils.RunCommand(cmdWithArgs, true)
 	return err
 }
 
 func (cmd *ExecCmd) executeShellCommand(cluster string, taskID string, command string) error {
-	args := []string{
-		"ecs", "execute-command",
-		"--cluster", cluster,
-		"--task", taskID,
-		"--interactive",
-		"--command", command,
-	}
-
-	shell := exec.Command("aws", args...)
+	cmdWithArgs := cmd.buildExecuteCommand(cluster, taskID, command)
+	shell := exec.Command(cmdWithArgs[0], cmdWithArgs[1:]...)
 	shell.Stdin = os.Stdin
 	shell.Stdout = os.Stdout
 	shell.Stderr = os.Stderr
