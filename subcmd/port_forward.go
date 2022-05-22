@@ -60,7 +60,7 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 
 	log.Printf("ECS task is running: %s", taskID)
 
-	sig := make(chan os.Signal)
+	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
 	signal.Ignore(syscall.SIGURG)
 	config.LoadDefaultConfig(context.Background())
