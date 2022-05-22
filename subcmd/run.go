@@ -2,6 +2,7 @@ package subcmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/winebarrel/demitas2"
 	"github.com/winebarrel/demitas2/definition"
@@ -24,7 +25,14 @@ func (cmd *RunCmd) Run(ctx *demitas2.Context) error {
 		fmt.Println()
 	}
 
-	_, _, err = demitas2.RunTask(ctx.EcspressoCmd, ctx.EcspressoOpts, def)
+	stdout, _, _, err := demitas2.RunTask(ctx.EcspressoCmd, ctx.EcspressoOpts, def)
+	taskId := findTaskIdFromLog(stdout)
+
+	defer func() {
+		log.Printf("Stopping ECS task... (Please wait for a while): %s", taskId)
+		cluster, _ := def.EcspressoConfig.Cluster()
+		stopTask(ctx.AwsConfig, cluster, taskId)
+	}()
 
 	return err
 }

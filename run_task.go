@@ -11,7 +11,7 @@ import (
 	"github.com/winebarrel/demitas2/utils"
 )
 
-func RunTask(ecspressoPath string, ecspressoOpts string, def *definition.Definition) (stdout string, stderr string, err error) {
+func RunTask(ecspressoPath string, ecspressoOpts string, def *definition.Definition) (stdout string, stderr string, interrupted bool, err error) {
 	runInTempDir(func() {
 		err = writeTemporaryConfigs(def.EcspressoConfig, def.Service, def.Task)
 
@@ -30,7 +30,7 @@ func RunTask(ecspressoPath string, ecspressoOpts string, def *definition.Definit
 			cmdWithArgs = append(cmdWithArgs, args...)
 		}
 
-		stdout, stderr, err = utils.RunCommand(cmdWithArgs, false)
+		stdout, stderr, interrupted, err = utils.RunCommand(cmdWithArgs, false)
 
 		if err != nil {
 			return

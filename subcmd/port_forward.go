@@ -9,7 +9,6 @@ import (
 	"syscall"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
 	"github.com/winebarrel/demitas2"
 	"github.com/winebarrel/demitas2/definition"
@@ -30,7 +29,6 @@ type PortForwardCmd struct {
 func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 	command := fmt.Sprintf("%s:%d %d", cmd.RemoteHost, cmd.RemotePort, cmd.RemotePort)
 	def, err := definition.Load(ctx.DefinitionOpts, command, StoneImage)
-	stopped := atomic.NewBool(false)
 
 	if err != nil {
 		return err
@@ -42,7 +40,7 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 	}
 
 	ecspressoOpts := ctx.EcspressoOpts + " --wait-until=running"
-	stdout, _, err := demitas2.RunTask(ctx.EcspressoCmd, ecspressoOpts, def)
+	stdout, _, interrupted, err := demitas2.RunTask(ctx.EcspressoCmd, ecspressoOpts, def)
 
 	if err != nil {
 		return err
@@ -58,16 +56,15 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 		return fmt.Errorf("task ID not found")
 	}
 
-	log.Printf("ECS task is running: %s", taskId)
-
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
 	signal.Ignore(syscall.SIGURG)
-	config.LoadDefaultConfig(context.Background())
+
 	cluster, _ := def.EcspressoConfig.Cluster()
+	stopped := atomic.NewBool(false)
 
 	teardown := func() {
-		if stopped.Load() || taskId == "" {
+		if stopped.Load() {
 			return
 		}
 
@@ -78,6 +75,12 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 	}
 
 	defer teardown()
+
+	if interrupted {
+		return nil
+	}
+
+	log.Printf("ECS task is running: %s", taskId)
 
 	go func() {
 		<-sig
@@ -134,7 +137,7 @@ func (cmd *PortForwardCmd) startSession(cluster string, taskId string, container
 		"--parameters", params,
 	}
 
-	_, _, err := utils.RunCommand(cmdWithArgs, true)
+	_, _, _, err := utils.RunCommand(cmdWithArgs, true)
 
 	return err
 }

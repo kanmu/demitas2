@@ -8,21 +8,24 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+
+	"go.uber.org/atomic"
 )
 
-func RunCommand(cmdWithArgs []string, silent bool) (string, string, error) {
+func RunCommand(cmdWithArgs []string, silent bool) (string, string, bool, error) {
 	cmd := exec.Command(cmdWithArgs[0], cmdWithArgs[1:]...)
+	interrupted := atomic.NewBool(false)
 
 	outReader, err := cmd.StdoutPipe()
 
 	if err != nil {
-		return "", "", err
+		return "", "", false, err
 	}
 
 	errReader, err := cmd.StderrPipe()
 
 	if err != nil {
-		return "", "", err
+		return "", "", false, err
 	}
 
 	wg := &sync.WaitGroup{}
@@ -36,6 +39,7 @@ func RunCommand(cmdWithArgs []string, silent bool) (string, string, error) {
 	go func() {
 		for {
 			s := <-sig
+			interrupted.Store(true)
 			_ = cmd.Process.Signal(s)
 		}
 	}()
@@ -67,16 +71,16 @@ func RunCommand(cmdWithArgs []string, silent bool) (string, string, error) {
 	err = cmd.Start()
 
 	if err != nil {
-		return bufOut.String(), bufErr.String(), err
+		return bufOut.String(), bufErr.String(), interrupted.Load(), err
 	}
 
 	err = cmd.Wait()
 
 	if err != nil {
-		return bufOut.String(), bufErr.String(), err
+		return bufOut.String(), bufErr.String(), interrupted.Load(), err
 	}
 
 	wg.Wait()
 
-	return bufOut.String(), bufErr.String(), nil
+	return bufOut.String(), bufErr.String(), interrupted.Load(), nil
 }

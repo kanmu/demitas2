@@ -1,7 +1,6 @@
 package subcmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -10,7 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/winebarrel/demitas2"
 	"github.com/winebarrel/demitas2/definition"
 	"github.com/winebarrel/demitas2/utils"
@@ -32,7 +30,6 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 	}
 
 	def, err := definition.Load(ctx.DefinitionOpts, "sleep infinity", image)
-	stopped := atomic.NewBool(false)
 
 	if err != nil {
 		return err
@@ -44,7 +41,7 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 	}
 
 	ecspressoOpts := ctx.EcspressoOpts + " --wait-until=running"
-	stdout, _, err := demitas2.RunTask(ctx.EcspressoCmd, ecspressoOpts, def)
+	stdout, _, interrupted, err := demitas2.RunTask(ctx.EcspressoCmd, ecspressoOpts, def)
 
 	if err != nil {
 		return err
@@ -60,16 +57,15 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 		return fmt.Errorf("task ID not found")
 	}
 
-	log.Printf("ECS task is running: %s", taskId)
-
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
 	signal.Ignore(syscall.SIGURG)
-	config.LoadDefaultConfig(context.Background())
+
 	cluster, _ := def.EcspressoConfig.Cluster()
+	stopped := atomic.NewBool(false)
 
 	teardown := func() {
-		if stopped.Load() || taskId == "" {
+		if stopped.Load() {
 			return
 		}
 
@@ -95,6 +91,12 @@ Task stop command:
 	}
 
 	defer teardown()
+
+	if interrupted {
+		return nil
+	}
+
+	log.Printf("ECS task is running: %s", taskId)
 
 	go func() {
 		<-sig
@@ -127,7 +129,7 @@ func (cmd *ExecCmd) buildExecuteCommand(cluster string, taskId string, command s
 
 func (cmd *ExecCmd) executeCommand(cluster string, taskId string, command string) error {
 	cmdWithArgs := cmd.buildExecuteCommand(cluster, taskId, command)
-	_, _, err := utils.RunCommand(cmdWithArgs, true)
+	_, _, _, err := utils.RunCommand(cmdWithArgs, true)
 	return err
 }
 
