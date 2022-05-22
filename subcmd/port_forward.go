@@ -52,13 +52,13 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 		return nil
 	}
 
-	taskID := findTaskIDFromLog(stdout)
+	taskId := findTaskIdFromLog(stdout)
 
-	if taskID == "" {
+	if taskId == "" {
 		return fmt.Errorf("task ID not found")
 	}
 
-	log.Printf("ECS task is running: %s", taskID)
+	log.Printf("ECS task is running: %s", taskId)
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
@@ -67,14 +67,14 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 	cluster, _ := def.EcspressoConfig.Cluster()
 
 	teardown := func() {
-		if stopped.Load() || taskID == "" {
+		if stopped.Load() || taskId == "" {
 			return
 		}
 
 		stopped.Store(true)
 
-		log.Printf("Stopping ECS task... (Please wait for a while): %s", taskID)
-		stopTask(ctx.AwsConfig, cluster, taskID)
+		log.Printf("Stopping ECS task... (Please wait for a while): %s", taskId)
+		stopTask(ctx.AwsConfig, cluster, taskId)
 	}
 
 	defer teardown()
@@ -85,7 +85,7 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 		os.Exit(130)
 	}()
 
-	containerID, err := cmd.getContainerID(ctx.AwsConfig, cluster, taskID)
+	containerId, err := cmd.getContainerId(ctx.AwsConfig, cluster, taskId)
 
 	if err != nil {
 		return fmt.Errorf("failed to get ID from container: %w", err)
@@ -93,38 +93,38 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 
 	log.Print("Start port forwarding...")
 
-	return cmd.startSession(cluster, taskID, containerID)
+	return cmd.startSession(cluster, taskId, containerId)
 }
 
-func (cmd *PortForwardCmd) getContainerID(cfg aws.Config, cluster string, taskID string) (string, error) {
+func (cmd *PortForwardCmd) getContainerId(cfg aws.Config, cluster string, taskId string) (string, error) {
 	svc := ecs.NewFromConfig(cfg)
 
 	input := &ecs.DescribeTasksInput{
 		Cluster: aws.String(cluster),
-		Tasks:   []string{taskID},
+		Tasks:   []string{taskId},
 	}
 
 	output, err := svc.DescribeTasks(context.Background(), input)
 
 	if err != nil {
-		return "", fmt.Errorf("faild to call DescribeTasks: %s/%s", taskID, cluster)
+		return "", fmt.Errorf("faild to call DescribeTasks: %s/%s", taskId, cluster)
 	}
 
 	if len(output.Tasks) == 0 {
-		return "", fmt.Errorf("task not found: %s/%s", taskID, cluster)
+		return "", fmt.Errorf("task not found: %s/%s", taskId, cluster)
 	}
 
 	task := output.Tasks[0]
 
 	if len(task.Containers) == 0 {
-		return "", fmt.Errorf("container not found: %s/%s", taskID, cluster)
+		return "", fmt.Errorf("container not found: %s/%s", taskId, cluster)
 	}
 
 	return *task.Containers[0].RuntimeId, nil
 }
 
-func (cmd *PortForwardCmd) startSession(cluster string, taskID string, containerID string) error {
-	target := fmt.Sprintf("ecs:%s_%s_%s", cluster, taskID, containerID)
+func (cmd *PortForwardCmd) startSession(cluster string, taskId string, containerId string) error {
+	target := fmt.Sprintf("ecs:%s_%s_%s", cluster, taskId, containerId)
 	params := fmt.Sprintf(`{"portNumber":["%d"],"localPortNumber":["%d"]}`, cmd.RemotePort, cmd.LocalPort)
 
 	cmdWithArgs := []string{

@@ -54,13 +54,13 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 		return nil
 	}
 
-	taskID := findTaskIDFromLog(stdout)
+	taskId := findTaskIdFromLog(stdout)
 
-	if taskID == "" {
+	if taskId == "" {
 		return fmt.Errorf("task ID not found")
 	}
 
-	log.Printf("ECS task is running: %s", taskID)
+	log.Printf("ECS task is running: %s", taskId)
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
@@ -69,7 +69,7 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 	cluster, _ := def.EcspressoConfig.Cluster()
 
 	teardown := func() {
-		if stopped.Load() || taskID == "" {
+		if stopped.Load() || taskId == "" {
 			return
 		}
 
@@ -83,15 +83,15 @@ Re-login command:
 
 Task stop command:
   aws ecs stop-task --cluster %s --task %s`,
-				cluster, taskID, cmd.Command,
-				cluster, taskID,
+				cluster, taskId, cmd.Command,
+				cluster, taskId,
 			)
 
 			return
 		}
 
-		log.Printf("Stopping ECS task... (Please wait for a while): %s", taskID)
-		stopTask(ctx.AwsConfig, cluster, taskID)
+		log.Printf("Stopping ECS task... (Please wait for a while): %s", taskId)
+		stopTask(ctx.AwsConfig, cluster, taskId)
 	}
 
 	defer teardown()
@@ -103,7 +103,7 @@ Task stop command:
 	}()
 
 	for {
-		err = cmd.executeCommand(cluster, taskID, "id")
+		err = cmd.executeCommand(cluster, taskId, "id")
 
 		if err == nil {
 			break
@@ -112,27 +112,27 @@ Task stop command:
 		time.Sleep(1 * time.Second)
 	}
 
-	return cmd.executeShellCommand(cluster, taskID, cmd.Command)
+	return cmd.executeShellCommand(cluster, taskId, cmd.Command)
 }
 
-func (cmd *ExecCmd) buildExecuteCommand(cluster string, taskID string, command string) []string {
+func (cmd *ExecCmd) buildExecuteCommand(cluster string, taskId string, command string) []string {
 	return []string{
 		"aws", "ecs", "execute-command",
 		"--cluster", cluster,
-		"--task", taskID,
+		"--task", taskId,
 		"--interactive",
 		"--command", command,
 	}
 }
 
-func (cmd *ExecCmd) executeCommand(cluster string, taskID string, command string) error {
-	cmdWithArgs := cmd.buildExecuteCommand(cluster, taskID, command)
+func (cmd *ExecCmd) executeCommand(cluster string, taskId string, command string) error {
+	cmdWithArgs := cmd.buildExecuteCommand(cluster, taskId, command)
 	_, _, err := utils.RunCommand(cmdWithArgs, true)
 	return err
 }
 
-func (cmd *ExecCmd) executeShellCommand(cluster string, taskID string, command string) error {
-	cmdWithArgs := cmd.buildExecuteCommand(cluster, taskID, command)
+func (cmd *ExecCmd) executeShellCommand(cluster string, taskId string, command string) error {
+	cmdWithArgs := cmd.buildExecuteCommand(cluster, taskId, command)
 	shell := exec.Command(cmdWithArgs[0], cmdWithArgs[1:]...)
 	shell.Stdin = os.Stdin
 	shell.Stdout = os.Stdout
