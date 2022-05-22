@@ -141,5 +141,6 @@ func (cmd *ExecCmd) executeShellCommand(cluster string, taskID string, command s
 	shell.Stdin = os.Stdin
 	shell.Stdout = os.Stdout
 	shell.Stderr = os.Stderr
+	signal.Ignore(os.Interrupt)
 	return shell.Run()
 }
