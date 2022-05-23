@@ -33,7 +33,7 @@ func (cmd *RunCmd) Run(ctx *demitas2.Context) error {
 
 		fmt.Printf(`ECS task is still running.
 
-Re-login command:
+Login command:
   aws ecs execute-command --cluster %s --task %s --interactive --command bash
 
 Task stop command:
