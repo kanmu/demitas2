@@ -69,7 +69,8 @@ Re-login command:
   aws ecs execute-command --cluster %s --task %s --interactive --command %s
 
 Task stop command:
-  aws ecs stop-task --cluster %s --task %s`,
+  aws ecs stop-task --cluster %s --task %s
+`,
 					def.Cluster, taskId, cmd.Command,
 					def.Cluster, taskId,
 				)
