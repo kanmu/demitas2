@@ -1,18 +1,10 @@
 package subcmd
 
 import (
-	"context"
 	"fmt"
-	"log"
-	"os"
-	"os/signal"
-	"syscall"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/ecs"
 	"github.com/winebarrel/demitas2"
 	"github.com/winebarrel/demitas2/utils"
-	"go.uber.org/atomic"
 )
 
 const (
@@ -34,13 +26,7 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 		return err
 	}
 
-	if ctx.DryRun {
-		def.Print()
-		fmt.Println()
-	}
-
-	ecspressoOpts := ctx.EcspressoOpts + " --wait-until=running"
-	stdout, _, interrupted, err := demitas2.RunTask(ctx.EcspressoCmd, ecspressoOpts, def)
+	taskId, interrupted, err := ctx.Ecspresso.RunUntilRunning(def, ctx.DryRun)
 
 	if err != nil {
 		return err
@@ -50,94 +36,28 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 		return nil
 	}
 
-	taskId := findTaskIdFromLog(stdout)
-
 	if taskId == "" {
 		return fmt.Errorf("task ID not found")
 	}
 
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt)
-	signal.Ignore(syscall.SIGURG)
+	return utils.TrapInt(
+		func() error {
+			if interrupted {
+				return nil
+			}
 
-	cluster, _ := def.EcspressoConfig.Cluster()
-	stopped := atomic.NewBool(false)
+			containerId, err := ctx.Ecs.GetContainerId(def.Cluster, taskId)
 
-	teardown := func() {
-		if stopped.Load() {
-			return
-		}
+			if err != nil {
+				return fmt.Errorf("failed to get ID from container: %w", err)
+			}
 
-		stopped.Store(true)
-
-		log.Printf("Stopping ECS task... (Please wait for a while): %s", taskId)
-		stopTask(ctx.AwsConfig, cluster, taskId)
-	}
-
-	defer teardown()
-
-	if interrupted {
-		return nil
-	}
-
-	log.Printf("ECS task is running: %s", taskId)
-
-	go func() {
-		<-sig
-		teardown()
-		os.Exit(130)
-	}()
-
-	containerId, err := cmd.getContainerId(ctx.AwsConfig, cluster, taskId)
-
-	if err != nil {
-		return fmt.Errorf("failed to get ID from container: %w", err)
-	}
-
-	log.Print("Start port forwarding...")
-
-	return cmd.startSession(cluster, taskId, containerId)
-}
-
-func (cmd *PortForwardCmd) getContainerId(cfg aws.Config, cluster string, taskId string) (string, error) {
-	svc := ecs.NewFromConfig(cfg)
-
-	input := &ecs.DescribeTasksInput{
-		Cluster: aws.String(cluster),
-		Tasks:   []string{taskId},
-	}
-
-	output, err := svc.DescribeTasks(context.Background(), input)
-
-	if err != nil {
-		return "", fmt.Errorf("faild to call DescribeTasks: %s/%s", taskId, cluster)
-	}
-
-	if len(output.Tasks) == 0 {
-		return "", fmt.Errorf("task not found: %s/%s", taskId, cluster)
-	}
-
-	task := output.Tasks[0]
-
-	if len(task.Containers) == 0 {
-		return "", fmt.Errorf("container not found: %s/%s", taskId, cluster)
-	}
-
-	return *task.Containers[0].RuntimeId, nil
-}
-
-func (cmd *PortForwardCmd) startSession(cluster string, taskId string, containerId string) error {
-	target := fmt.Sprintf("ecs:%s_%s_%s", cluster, taskId, containerId)
-	params := fmt.Sprintf(`{"portNumber":["%d"],"localPortNumber":["%d"]}`, cmd.RemotePort, cmd.LocalPort)
-
-	cmdWithArgs := []string{
-		"aws", "ssm", "start-session",
-		"--target", target,
-		"--document-name", "AWS-StartPortForwardingSession",
-		"--parameters", params,
-	}
-
-	_, _, _, err := utils.RunCommand(cmdWithArgs, true)
-
-	return err
+			fmt.Println("Start port forwarding...")
+			return ctx.Ecs.StartSession(def.Cluster, taskId, containerId, cmd.RemotePort, cmd.LocalPort)
+		},
+		func() {
+			fmt.Printf("Stopping task: %s\n", taskId)
+			ctx.Ecs.StopTask(def.Cluster, taskId)
+		},
+	)
 }

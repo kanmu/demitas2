@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
+	"strings"
 
 	"github.com/alecthomas/kong"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -11,6 +11,8 @@ import (
 	"github.com/willabides/kongplete"
 	"github.com/winebarrel/demitas2"
 	"github.com/winebarrel/demitas2/definition"
+	"github.com/winebarrel/demitas2/ecscli"
+	"github.com/winebarrel/demitas2/ecspresso"
 	"github.com/winebarrel/demitas2/subcmd"
 )
 
@@ -29,10 +31,6 @@ var cli struct {
 	InstallCompletions kongplete.InstallCompletions `cmd:"" help:"Install shell completions"`
 }
 
-func init() {
-	log.SetFlags(0)
-}
-
 func main() {
 	parser := kong.Must(&cli, kong.Vars{"version": version})
 
@@ -43,24 +41,21 @@ func main() {
 	ctx, err := parser.Parse(os.Args[1:])
 	parser.FatalIfErrorf(err)
 
+	if strings.TrimSpace(os.Getenv("AWS_PROFILE")) == "" {
+		os.Unsetenv("AWS_PROFILE")
+	}
+
 	cfg, err := config.LoadDefaultConfig(context.Background())
 
 	if err != nil {
 		panic(err)
 	}
 
-	ecspressoOpts := cli.EcspressoOpts
-
-	if cli.DryRun {
-		ecspressoOpts += " --dry-run"
-	}
-
 	err = ctx.Run(&demitas2.Context{
-		EcspressoCmd:   cli.EcspressoCmd,
-		EcspressoOpts:  ecspressoOpts,
+		Ecspresso:      ecspresso.NewEcspresso(cli.EcspressoCmd, cli.EcspressoOpts),
 		DryRun:         cli.DryRun,
 		DefinitionOpts: &cli.DefinitionOpts,
-		AwsConfig:      cfg,
+		Ecs:            ecscli.NewDriver(cfg),
 	})
 
 	ctx.FatalIfErrorf(err)

@@ -57,10 +57,6 @@ func (ecsConf *EcspressoConfig) Print() {
 	fmt.Printf("# ecspresso config\n%s\n", strings.TrimSpace(string(ym)))
 }
 
-func (ecsConf *EcspressoConfig) Cluster() (string, error) {
-	return ecsConf.get("cluster")
-}
-
 func (ecsConf *EcspressoConfig) get(key string) (string, error) {
 	var p fastjson.Parser
 	v, err := p.ParseBytes(ecsConf.Content)
