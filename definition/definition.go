@@ -22,6 +22,7 @@ type Definition struct {
 	EcspressoConfig *EcspressoConfig
 	Service         *ServiceDefinition
 	Task            *TaskDefinition
+	Cluster         string
 }
 
 func (opts *DefinitionOpts) ExpandConfDir() string {
@@ -82,10 +83,17 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string) (
 		return nil, err
 	}
 
+	cluster, err := ecspressoConf.get("cluster")
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &Definition{
 		EcspressoConfig: ecspressoConf,
 		Service:         serviceDef,
 		Task:            taskDef,
+		Cluster:         cluster,
 	}, nil
 }
 
