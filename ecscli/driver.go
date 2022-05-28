@@ -97,12 +97,7 @@ func buildExecuteCommand(cluster string, taskId string, command string) []string
 func (dri *Driver) ExecuteCommand(cluster string, taskId string, command string) error {
 	cmdWithArgs := buildExecuteCommand(cluster, taskId, command)
 	_, stderr, _, err := utils.RunCommand(cmdWithArgs, true)
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, stderr)
-	}
-
-	return err
+	return fmt.Errorf("%w: %s", err, stderr)
 }
 
 func (dri *Driver) ExecuteInteractiveCommand(cluster string, taskId string, command string) error {
