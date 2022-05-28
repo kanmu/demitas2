@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os/user"
+	"regexp"
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch"
@@ -84,7 +85,8 @@ func patchContainerDefInLoad(content []byte) ([]byte, error) {
 		panic(err)
 	}
 
-	patch := fmt.Sprintf(`{"family":"dmts-%s-%s"}`, currUser.Username, string(family))
+	username := regexp.MustCompile(`\W+`).ReplaceAllString(currUser.Username, "")
+	patch := fmt.Sprintf(`{"family":"dmts-%s-%s"}`, username, string(family))
 	patchedContent, err := jsonpatch.MergePatch(content, []byte(patch))
 
 	if err != nil {
