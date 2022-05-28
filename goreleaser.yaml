@@ -5,6 +5,7 @@ before:
     - go get -u golang.org/x/sys
 builds:
   - main: ./cmd/dmts
+    binary: dmts
     ldflags:
       - -X main.version={{.Version}}
     env:
