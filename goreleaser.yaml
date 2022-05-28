@@ -1,0 +1,24 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: ./cmd/demitas2
+    ldflags:
+      - -X main.version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+checksum:
+  name_template: "checksums.txt"
+brews:
+  - tap:
+      owner: winebarrel
+      name: homebrew-demitas2
+    homepage: https://github.com/winebarrel/demitas2
+    description: Wrapper for ecspresso that creates task definitions at run time.
+    license: MIT
+    install: |
+      bin.install 'dmts'
