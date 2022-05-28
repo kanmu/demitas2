@@ -53,3 +53,9 @@ Commands:
 
 Run "dmts <command> --help" for more information on a command.
 ```
+
+## Install shell completions
+
+```
+dmts install-completions >> ~/.zshrc
+```
