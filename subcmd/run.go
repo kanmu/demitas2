@@ -7,10 +7,10 @@ import (
 )
 
 type RunCmd struct {
-	Profile  string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
-	Command  string `help:"Command to run on a container."`
-	Image    string `help:"Container image."`
-	SkipStop bool   `help:"Skip task stop."`
+	Profile string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
+	Command string `help:"Command to run on a container."`
+	Image   string `help:"Container image."`
+	Detach  bool   `help:"Detach when the task starts."`
 }
 
 func (cmd *RunCmd) Run(ctx *demitas2.Context) error {
@@ -20,7 +20,7 @@ func (cmd *RunCmd) Run(ctx *demitas2.Context) error {
 		return err
 	}
 
-	if cmd.SkipStop {
+	if cmd.Detach {
 		taskId, interrupted, err := ctx.Ecspresso.RunUntilRunning(def, ctx.DryRun)
 
 		if err != nil {

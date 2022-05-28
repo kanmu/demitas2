@@ -3,6 +3,7 @@ package definition
 import (
 	"bytes"
 	"fmt"
+	"os/user"
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch"
@@ -77,7 +78,14 @@ func patchContainerDefInLoad(content []byte) ([]byte, error) {
 		return content, nil
 	}
 
-	patchedContent, err := jsonpatch.MergePatch(content, []byte(`{"family":"dmts-`+string(family)+`"}`))
+	currUser, err := user.Current()
+
+	if err != nil {
+		panic(err)
+	}
+
+	patch := fmt.Sprintf(`{"family":"dmts-%s-%s"}`, currUser.Username, string(family))
+	patchedContent, err := jsonpatch.MergePatch(content, []byte(patch))
 
 	if err != nil {
 		return nil, err

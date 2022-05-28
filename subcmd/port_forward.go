@@ -53,7 +53,7 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 			}
 
 			fmt.Println("Start port forwarding...")
-			return ctx.Ecs.StartSession(def.Cluster, taskId, containerId, cmd.RemotePort, cmd.LocalPort)
+			return ctx.Ecs.StartPortForwardingSession(def.Cluster, taskId, containerId, cmd.RemotePort, cmd.LocalPort)
 		},
 		func() {
 			fmt.Printf("Stopping task: %s\n", taskId)

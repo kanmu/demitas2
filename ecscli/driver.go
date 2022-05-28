@@ -62,10 +62,12 @@ func (dri *Driver) GetContainerId(cluster string, taskId string) (string, error)
 	return *task.Containers[0].RuntimeId, nil
 }
 
-func (dri *Driver) StartSession(cluster string, taskId string, containerId string, remotePort uint, localPort uint) error {
+func (dri *Driver) StartPortForwardingSession(cluster string, taskId string, containerId string, remotePort uint, localPort uint) error {
 	target := fmt.Sprintf("ecs:%s_%s_%s", cluster, taskId, containerId)
 	params := fmt.Sprintf(`{"portNumber":["%d"],"localPortNumber":["%d"]}`, remotePort, localPort)
 
+	// TODO: Use AWS-StartPortForwardingSessionToRemoteHost
+	//       cf. https://dev.classmethod.jp/articles/aws-ssm-support-remote-host-port-forward/
 	cmdWithArgs := []string{
 		"aws", "ssm", "start-session",
 		"--target", target,
@@ -73,7 +75,11 @@ func (dri *Driver) StartSession(cluster string, taskId string, containerId strin
 		"--parameters", params,
 	}
 
-	_, _, _, err := utils.RunCommand(cmdWithArgs, true)
+	_, stderr, _, err := utils.RunCommand(cmdWithArgs, true)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, stderr)
+	}
 
 	return err
 }
@@ -90,7 +96,12 @@ func buildExecuteCommand(cluster string, taskId string, command string) []string
 
 func (dri *Driver) ExecuteCommand(cluster string, taskId string, command string) error {
 	cmdWithArgs := buildExecuteCommand(cluster, taskId, command)
-	_, _, _, err := utils.RunCommand(cmdWithArgs, true)
+	_, stderr, _, err := utils.RunCommand(cmdWithArgs, true)
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, stderr)
+	}
+
 	return err
 }
 
