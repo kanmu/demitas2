@@ -8,6 +8,7 @@ Wrapper for ecspresso that creates task definitions at run time.
 
 * [ecspresso](https://github.com/kayac/ecspresso)
 * [AWS CLI](https://aws.amazon.com/cli/)
+* [Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
 
 ## Installation
 
