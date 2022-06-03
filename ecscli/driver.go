@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
@@ -75,7 +76,19 @@ func (dri *Driver) StartPortForwardingSession(cluster string, taskId string, con
 		"--parameters", params,
 	}
 
-	_, stderr, _, err := utils.RunCommand(cmdWithArgs, true)
+	var stderr string
+	var err error
+
+	for i := 0; i < 30; i++ {
+		// NOTE: https://github.com/winebarrel/demitas2/issues/2
+		_, stderr, _, err = utils.RunCommand(cmdWithArgs, true)
+
+		if err != nil {
+			break
+		}
+
+		time.Sleep(1 * time.Second)
+	}
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, stderr)

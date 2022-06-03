@@ -49,7 +49,7 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 				return nil
 			}
 
-			for {
+			for i := 0; i < 30; i++ {
 				err = ctx.Ecs.ExecuteCommand(def.Cluster, taskId, "id")
 
 				if err == nil {
@@ -57,6 +57,10 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 				}
 
 				time.Sleep(1 * time.Second)
+			}
+
+			if err != nil {
+				return err
 			}
 
 			return ctx.Ecs.ExecuteInteractiveCommand(def.Cluster, taskId, cmd.Command)
