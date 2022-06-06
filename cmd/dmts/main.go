@@ -23,6 +23,7 @@ var cli struct {
 	EcspressoCmd  string `env:"ECSPRESSO_CMD" required:"" default:"ecspresso" help:"ecspresso command path."`
 	EcspressoOpts string `env:"ECSPRESSO_OPTS" short:"X" help:"Options passed to ecspresso."`
 	DryRun        bool   `default:"false" help:"Run ecspresso with dry-run."`
+	AwsProfile    string `env:"AWS_PROFILE" short:"P" help:"AWS profile name"`
 	definition.DefinitionOpts
 	Run                subcmd.RunCmd                `cmd:"" help:"Run ECS task."`
 	Exec               subcmd.ExecCmd               `cmd:"" help:"Run ECS task and execute a command on a container."`
@@ -40,6 +41,8 @@ func main() {
 
 	ctx, err := parser.Parse(os.Args[1:])
 	parser.FatalIfErrorf(err)
+
+	os.Setenv("AWS_PROFILE", cli.AwsProfile)
 
 	if strings.TrimSpace(os.Getenv("AWS_PROFILE")) == "" {
 		os.Unsetenv("AWS_PROFILE")
