@@ -89,8 +89,10 @@ func (dri *Driver) StartPortForwardingSession(cluster string, taskId string, con
 			break
 		}
 
-		fmt.Fprintf(os.Stderr, "Faild to start session: %s\nRetrying...\n", strings.TrimSpace(stdout))
-		time.Sleep(1 * time.Second)
+		if !strings.Contains(stdout, "Terminate signal received, exiting.") {
+			fmt.Fprintf(os.Stderr, "Faild to start session: %s\nRetrying...\n", strings.TrimSpace(stdout))
+			time.Sleep(1 * time.Second)
+		}
 	}
 
 	return err
