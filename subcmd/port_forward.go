@@ -2,6 +2,7 @@ package subcmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/winebarrel/demitas2"
 	"github.com/winebarrel/demitas2/utils"
@@ -52,6 +53,7 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 				return fmt.Errorf("failed to get ID from container: %w", err)
 			}
 
+			time.Sleep(3 * time.Second) // wait... :-(
 			fmt.Println("Start port forwarding...")
 			return ctx.Ecs.StartPortForwardingSession(def.Cluster, taskId, containerId, cmd.RemotePort, cmd.LocalPort)
 		},
