@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -76,22 +77,20 @@ func (dri *Driver) StartPortForwardingSession(cluster string, taskId string, con
 		"--parameters", params,
 	}
 
-	var stderr string
 	var err error
 
 	for i := 0; i < 30; i++ {
+		var stdout string
+
 		// NOTE: https://github.com/winebarrel/demitas2/issues/2
-		_, stderr, _, err = utils.RunCommand(cmdWithArgs, true)
+		stdout, _, _, err = utils.RunCommand(cmdWithArgs, true)
 
 		if err != nil {
 			break
 		}
 
+		fmt.Fprintf(os.Stderr, "Faild to start session: %s\nRetrying...\n", strings.TrimSpace(stdout))
 		time.Sleep(1 * time.Second)
-	}
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, stderr)
 	}
 
 	return err
