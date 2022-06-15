@@ -7,7 +7,7 @@ import (
 )
 
 type RunCmd struct {
-	Profile string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
+	Profile string `env:"DMTS_PROFILE" short:"p" help:"Demitas profile name."`
 	Command string `help:"Command to run on a container."`
 	Image   string `help:"Container image."`
 	Detach  bool   `help:"Detach when the task starts."`

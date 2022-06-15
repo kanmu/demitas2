@@ -13,7 +13,7 @@ const (
 )
 
 type PortForwardCmd struct {
-	Profile    string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
+	Profile    string `env:"DMTS_PROFILE" short:"p" help:"Demitas profile name."`
 	RemoteHost string `required:"" short:"H" help:"Remote host."`
 	RemotePort uint   `required:"" short:"r"  help:"Remote port."`
 	LocalPort  uint   `required:"" short:"l"  help:"Local port."`

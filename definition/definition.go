@@ -36,7 +36,11 @@ func (opts *DefinitionOpts) ExpandConfDir() string {
 }
 
 func (opts *DefinitionOpts) Load(profile string, command string, image string) (*Definition, error) {
-	confDir := filepath.Join(opts.ExpandConfDir(), profile)
+	confDir := opts.ExpandConfDir()
+
+	if profile != "" {
+		confDir = filepath.Join(confDir, profile)
+	}
 	ecspressoConf, err := loadEcsecspressoConf(confDir, opts)
 
 	if err != nil {

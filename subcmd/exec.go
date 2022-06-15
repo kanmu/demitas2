@@ -9,7 +9,7 @@ import (
 )
 
 type ExecCmd struct {
-	Profile      string `env:"DMTS_PROFILE" short:"p" required:"" help:"Demitas profile name."`
+	Profile      string `env:"DMTS_PROFILE" short:"p" help:"Demitas profile name."`
 	Command      string `evn:"DMTS_EXEC_COMMAND" required:"" default:"bash" help:"Command to run on a container."`
 	Image        string `env:"DMTS_EXEC_IMAGE" short:"i" default:"public.ecr.aws/lts/ubuntu:latest" help:"Container image."`
 	UseTaskImage bool   `env:"DMTS_EXEC_USE_TASK_IMAGE" help:"Use task definition image."`
