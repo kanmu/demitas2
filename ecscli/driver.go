@@ -110,11 +110,12 @@ func buildExecuteCommand(cluster string, taskId string, command string) []string
 
 func (dri *Driver) ExecuteCommand(cluster string, taskId string, command string) error {
 	cmdWithArgs := buildExecuteCommand(cluster, taskId, command)
-	_, stderr, _, err := utils.RunCommand(cmdWithArgs, true)
+	stdout, stderr, _, err := utils.RunCommand(cmdWithArgs, true)
 
 	if err != nil {
-		if stderr != "" {
-			err = fmt.Errorf("%w: %s", err, stderr)
+		if stdout != "" || stderr != "" {
+			errmsg := strings.TrimSpace(stdout + "\n" + stderr)
+			err = fmt.Errorf("%w: %s", err, errmsg)
 		}
 
 		return err

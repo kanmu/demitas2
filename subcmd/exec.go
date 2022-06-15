@@ -49,6 +49,8 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 				return nil
 			}
 
+			time.Sleep(3 * time.Second) // wait... :-(
+
 			for i := 0; i < 30; i++ {
 				err = ctx.Ecs.ExecuteCommand(def.Cluster, taskId, "id")
 
