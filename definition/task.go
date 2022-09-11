@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os/user"
 	"regexp"
+	"strconv"
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch"
@@ -36,7 +37,7 @@ func newTaskDefinition(path string) (*TaskDefinition, error) {
 	return taskDef, nil
 }
 
-func (taskDef *TaskDefinition) patch(overrides string, containerDef *ContainerDefinition) error {
+func (taskDef *TaskDefinition) patch(overrides string, containerDef *ContainerDefinition, cpu uint64, memory uint64) error {
 	overrides = strings.TrimSpace(overrides)
 	patchedContent := taskDef.Content
 	var err error
@@ -54,6 +55,22 @@ func (taskDef *TaskDefinition) patch(overrides string, containerDef *ContainerDe
 
 	if err != nil {
 		return fmt.Errorf("failed to patch containerDefinitions: %w", err)
+	}
+
+	if cpu != 0 {
+		patchedContent, err = jsonpatch.MergePatch(patchedContent, []byte(`{"cpu":"`+strconv.FormatUint(cpu, 10)+`"}`))
+
+		if err != nil {
+			return fmt.Errorf("failed to update 'cpu' in ECS taks definition: %w", err)
+		}
+	}
+
+	if memory != 0 {
+		patchedContent, err = jsonpatch.MergePatch(patchedContent, []byte(`{"memory":"`+strconv.FormatUint(memory, 10)+`"}`))
+
+		if err != nil {
+			return fmt.Errorf("failed to update 'memory' in ECS taks definition: %w", err)
+		}
 	}
 
 	taskDef.Content = patchedContent
