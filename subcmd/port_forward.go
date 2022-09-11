@@ -21,7 +21,7 @@ type PortForwardCmd struct {
 
 func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 	command := fmt.Sprintf("%s:%d %d", cmd.RemoteHost, cmd.RemotePort, cmd.RemotePort)
-	def, err := ctx.DefinitionOpts.Load(cmd.Profile, command, StoneImage)
+	def, err := ctx.DefinitionOpts.Load(cmd.Profile, command, StoneImage, 0, 0)
 
 	if err != nil {
 		return err

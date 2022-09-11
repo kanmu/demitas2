@@ -47,13 +47,13 @@ Flags:
                                    definition.
 
 Commands:
-  run --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" --profile=STRING
+  run --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet"
     Run ECS task.
 
-  exec --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" --profile=STRING --command="bash"
+  exec --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" --command="bash"
     Run ECS task and execute a command on a container.
 
-  port-forward --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" --profile=STRING --remote-host=STRING --remote-port=UINT --local-port=UINT
+  port-forward --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" --remote-host=STRING --remote-port=UINT --local-port=UINT
     Forward a local port to a container.
 
   profiles --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet"

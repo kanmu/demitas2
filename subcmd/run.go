@@ -10,11 +10,13 @@ type RunCmd struct {
 	Profile string `env:"DMTS_PROFILE" short:"p" help:"Demitas profile name."`
 	Command string `help:"Command to run on a container."`
 	Image   string `help:"Container image."`
+	Cpu     uint64 `help:"Task CPU limit."`
+	Memory  uint64 `help:"Task memory limit."`
 	Detach  bool   `help:"Detach when the task starts."`
 }
 
 func (cmd *RunCmd) Run(ctx *demitas2.Context) error {
-	def, err := ctx.DefinitionOpts.Load(cmd.Profile, cmd.Command, cmd.Image)
+	def, err := ctx.DefinitionOpts.Load(cmd.Profile, cmd.Command, cmd.Image, cmd.Cpu, cmd.Memory)
 
 	if err != nil {
 		return err

@@ -35,7 +35,7 @@ func (opts *DefinitionOpts) ExpandConfDir() string {
 	return confDir
 }
 
-func (opts *DefinitionOpts) Load(profile string, command string, image string) (*Definition, error) {
+func (opts *DefinitionOpts) Load(profile string, command string, image string, cpu uint64, memory uint64) (*Definition, error) {
 	confDir := opts.ExpandConfDir()
 
 	if profile != "" {
@@ -81,7 +81,7 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string) (
 		return nil, err
 	}
 
-	taskDef, err := loadTaskDef(confDir, taskDefFile, containerDef, opts)
+	taskDef, err := loadTaskDef(confDir, taskDefFile, containerDef, opts, cpu, memory)
 
 	if err != nil {
 		return nil, err
@@ -133,14 +133,14 @@ func loadServiceDef(confDir string, serviceDefFile string, opts *DefinitionOpts)
 	return serviceDef, nil
 }
 
-func loadTaskDef(confDir string, taskDefFile string, containerDef *ContainerDefinition, opts *DefinitionOpts) (*TaskDefinition, error) {
+func loadTaskDef(confDir string, taskDefFile string, containerDef *ContainerDefinition, opts *DefinitionOpts, cpu uint64, memory uint64) (*TaskDefinition, error) {
 	taskDef, err := newTaskDefinition(filepath.Join(confDir, taskDefFile))
 
 	if err != nil {
 		return nil, err
 	}
 
-	err = taskDef.patch(opts.TaskOverrides, containerDef)
+	err = taskDef.patch(opts.TaskOverrides, containerDef, cpu, memory)
 
 	if err != nil {
 		return nil, err
