@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch"
@@ -70,6 +71,19 @@ func (containerDef *ContainerDefinition) patch(overrides string, command string,
 	}
 
 	if image != "" {
+		if strings.HasPrefix(image, ":") {
+			var p fastjson.Parser
+			v, err := p.ParseBytes(patchedContent0)
+
+			if err != nil {
+				panic(err)
+			}
+
+			fmt.Println("cadcao")
+			origImg := string(v.GetStringBytes("image"))
+			image = regexp.MustCompile(":[^:]+$").ReplaceAllString(origImg, image)
+		}
+
 		patchedContent0, err = jsonpatch.MergePatch(patchedContent0, []byte(`{"image":"`+image+`"}`))
 
 		if err != nil {
