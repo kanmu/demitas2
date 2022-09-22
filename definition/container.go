@@ -79,7 +79,6 @@ func (containerDef *ContainerDefinition) patch(overrides string, command string,
 				panic(err)
 			}
 
-			fmt.Println("cadcao")
 			origImg := string(v.GetStringBytes("image"))
 			image = regexp.MustCompile(":[^:]+$").ReplaceAllString(origImg, image)
 		}
