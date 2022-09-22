@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"regexp"
 
 	jsonpatch "github.com/evanphx/json-patch"
@@ -23,11 +24,17 @@ type Ecspresso struct {
 	options string
 }
 
-func NewEcspresso(path string, opts string) *Ecspresso {
+func NewEcspresso(path string, opts string) (*Ecspresso, error) {
+	out, err := exec.Command(path, "version").CombinedOutput()
+
+	if err != nil {
+		return nil, fmt.Errorf("faild to execute ecspresso: %w: %s", err, out)
+	}
+
 	return &Ecspresso{
 		path:    path,
 		options: opts,
-	}
+	}, nil
 }
 
 func (ecsp *Ecspresso) RunUntilRunning(def *definition.Definition, dryRun bool) (taskId string, interrupted bool, err error) {

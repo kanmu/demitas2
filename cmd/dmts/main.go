@@ -54,8 +54,14 @@ func main() {
 		panic(err)
 	}
 
+	ecsp, err := ecspresso.NewEcspresso(cli.EcspressoCmd, cli.EcspressoOpts)
+
+	if err != nil {
+		ctx.FatalIfErrorf(err)
+	}
+
 	err = ctx.Run(&demitas2.Context{
-		Ecspresso:      ecspresso.NewEcspresso(cli.EcspressoCmd, cli.EcspressoOpts),
+		Ecspresso:      ecsp,
 		DryRun:         cli.DryRun,
 		DefinitionOpts: &cli.DefinitionOpts,
 		Ecs:            ecscli.NewDriver(cfg),
