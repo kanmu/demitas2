@@ -13,7 +13,7 @@ Wrapper for ecspresso that creates task definitions at run time.
 ## Installation
 
 ```
-brew install kanmu/demitas2/demitas2
+brew install kanmu/tools/demitas2
 ```
 
 ## Usage
