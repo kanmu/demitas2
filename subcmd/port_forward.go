@@ -59,7 +59,7 @@ func (cmd *PortForwardCmd) Run(ctx *demitas2.Context) error {
 		},
 		func() {
 			fmt.Printf("Stopping task: %s\n", taskId)
-			ctx.Ecs.StopTask(def.Cluster, taskId)
+			ctx.Ecs.StopTask(def.Cluster, taskId) //nolint:errcheck
 		},
 	)
 }

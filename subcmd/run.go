@@ -50,7 +50,7 @@ Task stop command:
 		taskId, _, err := ctx.Ecspresso.RunUntilStopped(def, ctx.DryRun)
 
 		defer func() {
-			ctx.Ecs.StopTask(def.Cluster, taskId)
+			ctx.Ecs.StopTask(def.Cluster, taskId) //nolint:errcheck
 		}()
 
 		return err

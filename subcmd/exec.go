@@ -92,6 +92,6 @@ Task stop command:
 			}
 
 			fmt.Printf("Stopping task: %s\n", taskId)
-			ctx.Ecs.StopTask(def.Cluster, taskId)
+			ctx.Ecs.StopTask(def.Cluster, taskId) //nolint:errcheck
 		})
 }
