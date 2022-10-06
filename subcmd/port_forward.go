@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/winebarrel/demitas2"
-	"github.com/winebarrel/demitas2/utils"
+	"github.com/kanmu/demitas2"
+	"github.com/kanmu/demitas2/utils"
 )
 
 const (
-	StoneImage = "public.ecr.aws/winebarrel/stone"
+	StoneImage = "public.ecr.aws/kanmu/stone"
 )
 
 type PortForwardCmd struct {

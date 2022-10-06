@@ -8,9 +8,9 @@ import (
 	"regexp"
 
 	jsonpatch "github.com/evanphx/json-patch"
+	"github.com/kanmu/demitas2/definition"
+	"github.com/kanmu/demitas2/utils"
 	"github.com/mattn/go-shellwords"
-	"github.com/winebarrel/demitas2/definition"
-	"github.com/winebarrel/demitas2/utils"
 )
 
 const (

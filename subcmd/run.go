@@ -3,7 +3,7 @@ package subcmd
 import (
 	"fmt"
 
-	"github.com/winebarrel/demitas2"
+	"github.com/kanmu/demitas2"
 )
 
 type RunCmd struct {

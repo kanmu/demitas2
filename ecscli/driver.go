@@ -11,7 +11,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
-	"github.com/winebarrel/demitas2/utils"
+	"github.com/kanmu/demitas2/utils"
 )
 
 type Driver struct {
@@ -82,7 +82,7 @@ func (dri *Driver) StartPortForwardingSession(cluster string, taskId string, con
 	for i := 0; i < 30; i++ {
 		var stdout string
 
-		// NOTE: https://github.com/winebarrel/demitas2/issues/2
+		// NOTE: https://github.com/kanmu/demitas2/issues/2
 		stdout, _, _, err = utils.RunCommand(cmdWithArgs, true)
 
 		if err != nil {

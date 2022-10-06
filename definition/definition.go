@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/winebarrel/demitas2/utils"
+	"github.com/kanmu/demitas2/utils"
 	tilde "gopkg.in/mattes/go-expand-tilde.v1"
 )
 

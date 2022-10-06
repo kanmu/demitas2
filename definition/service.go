@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch"
-	"github.com/winebarrel/demitas2/utils"
+	"github.com/kanmu/demitas2/utils"
 )
 
 type ServiceDefinition struct {

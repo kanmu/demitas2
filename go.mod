@@ -1,6 +1,6 @@
-module github.com/winebarrel/demitas2
+module github.com/kanmu/demitas2
 
-go 1.17
+go 1.19
 
 require (
 	github.com/alecthomas/kong v0.5.0

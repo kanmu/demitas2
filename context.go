@@ -1,9 +1,9 @@
 package demitas2
 
 import (
-	"github.com/winebarrel/demitas2/definition"
-	"github.com/winebarrel/demitas2/ecscli"
-	"github.com/winebarrel/demitas2/ecspresso"
+	"github.com/kanmu/demitas2/definition"
+	"github.com/kanmu/demitas2/ecscli"
+	"github.com/kanmu/demitas2/ecspresso"
 )
 
 type Context struct {
