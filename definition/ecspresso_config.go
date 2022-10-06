@@ -2,7 +2,7 @@ package definition
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch"
@@ -15,7 +15,7 @@ type EcspressoConfig struct {
 }
 
 func newEcspressoConfig(path string) (*EcspressoConfig, error) {
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to load ecspresso config: %w: %s", err, path)

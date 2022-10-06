@@ -2,7 +2,6 @@ package ecspresso
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"regexp"
@@ -101,7 +100,7 @@ func runInTempDir(callback func()) {
 		panic(err)
 	}
 
-	tmp, err := ioutil.TempDir("", "demitas2")
+	tmp, err := os.MkdirTemp("", "demitas2")
 
 	if err != nil {
 		panic(err)
@@ -122,13 +121,13 @@ func runInTempDir(callback func()) {
 }
 
 func writeTemporaryConfigs(ecsConf *definition.EcspressoConfig, svrDef *definition.ServiceDefinition, taskDef *definition.TaskDefinition) error {
-	err := ioutil.WriteFile(taskDefFile, taskDef.Content, os.FileMode(0o644))
+	err := os.WriteFile(taskDefFile, taskDef.Content, os.FileMode(0o644))
 
 	if err != nil {
 		return fmt.Errorf("failed to write ECS task definition: %w", err)
 	}
 
-	err = ioutil.WriteFile(serviceDefFile, svrDef.Content, os.FileMode(0o644))
+	err = os.WriteFile(serviceDefFile, svrDef.Content, os.FileMode(0o644))
 
 	if err != nil {
 		return fmt.Errorf("failed to write ECS service definition: %w", err)
@@ -147,7 +146,7 @@ func writeTemporaryConfigs(ecsConf *definition.EcspressoConfig, svrDef *definiti
 		return fmt.Errorf("failed to convert temporary ecspresso config to yaml: %w", err)
 	}
 
-	err = ioutil.WriteFile(ecspressoCfgFile, ecsConfYaml, os.FileMode(0o644))
+	err = os.WriteFile(ecspressoCfgFile, ecsConfYaml, os.FileMode(0o644))
 
 	if err != nil {
 		return fmt.Errorf("failed to write ecspresso config: %w", err)
