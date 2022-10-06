@@ -7,13 +7,13 @@ import (
 
 	"github.com/alecthomas/kong"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/kanmu/demitas2"
+	"github.com/kanmu/demitas2/definition"
+	"github.com/kanmu/demitas2/ecscli"
+	"github.com/kanmu/demitas2/ecspresso"
+	"github.com/kanmu/demitas2/subcmd"
 	"github.com/posener/complete"
 	"github.com/willabides/kongplete"
-	"github.com/winebarrel/demitas2"
-	"github.com/winebarrel/demitas2/definition"
-	"github.com/winebarrel/demitas2/ecscli"
-	"github.com/winebarrel/demitas2/ecspresso"
-	"github.com/winebarrel/demitas2/subcmd"
 )
 
 var version string

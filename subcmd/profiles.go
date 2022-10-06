@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/winebarrel/demitas2"
+	"github.com/kanmu/demitas2"
 )
 
 type ProfilesCmd struct {

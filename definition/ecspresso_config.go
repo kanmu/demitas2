@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	jsonpatch "github.com/evanphx/json-patch"
+	"github.com/kanmu/demitas2/utils"
 	"github.com/valyala/fastjson"
-	"github.com/winebarrel/demitas2/utils"
 )
 
 type EcspressoConfig struct {

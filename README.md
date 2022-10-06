@@ -1,6 +1,6 @@
 # demitas2
 
-[![build](https://github.com/winebarrel/demitas2/actions/workflows/build.yml/badge.svg)](https://github.com/winebarrel/demitas2/actions/workflows/build.yml)
+[![build](https://github.com/kanmu/demitas2/actions/workflows/build.yml/badge.svg)](https://github.com/kanmu/demitas2/actions/workflows/build.yml)
 
 Wrapper for ecspresso that creates task definitions at run time.
 
@@ -13,7 +13,7 @@ Wrapper for ecspresso that creates task definitions at run time.
 ## Installation
 
 ```
-brew install winebarrel/demitas2/demitas2
+brew install kanmu/demitas2/demitas2
 ```
 
 ## Usage

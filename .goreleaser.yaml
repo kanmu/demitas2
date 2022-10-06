@@ -15,9 +15,9 @@ checksum:
   name_template: "checksums.txt"
 brews:
   - tap:
-      owner: winebarrel
+      owner: kanmu
       name: homebrew-demitas2
-    homepage: https://github.com/winebarrel/demitas2
+    homepage: https://github.com/kanmu/demitas2
     description: Wrapper for ecspresso that creates task definitions at run time.
     license: MIT
     install: |
