@@ -55,7 +55,7 @@ func (ecsp *Ecspresso) run(def *definition.Definition, dryRun bool, untilRunning
 		opts += " --dry-run"
 	}
 
-	var stdout string
+	var stdout, stderr string
 
 	runInTempDir(func() {
 		err = writeTemporaryConfigs(def.EcspressoConfig, def.Service, def.Task)
@@ -75,7 +75,7 @@ func (ecsp *Ecspresso) run(def *definition.Definition, dryRun bool, untilRunning
 			cmdWithArgs = append(cmdWithArgs, args...)
 		}
 
-		stdout, _, interrupted, err = utils.RunCommand(cmdWithArgs, false)
+		stdout, stderr, interrupted, err = utils.RunCommand(cmdWithArgs, false)
 
 		if err != nil {
 			return
@@ -89,6 +89,10 @@ func (ecsp *Ecspresso) run(def *definition.Definition, dryRun bool, untilRunning
 	}
 
 	taskId = findTaskIdFromLog(stdout)
+
+	if taskId == "" {
+		taskId = findTaskIdFromLog(stderr)
+	}
 
 	return
 }
