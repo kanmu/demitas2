@@ -55,8 +55,7 @@ func (ecsp *Ecspresso) run(def *definition.Definition, dryRun bool, untilRunning
 		opts += " --dry-run"
 	}
 
-	var stdout string
-	var stderr string
+	var stdout, stderr string
 
 	runInTempDir(func() {
 		err = writeTemporaryConfigs(def.EcspressoConfig, def.Service, def.Task)
