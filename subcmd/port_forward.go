@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	StoneImage = "public.ecr.aws/kanmu/stone"
+	StoneImage = "public.ecr.aws/winebarrel/stone"
 )
 
 type PortForwardCmd struct {
