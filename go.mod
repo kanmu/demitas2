@@ -12,7 +12,7 @@ require (
 	github.com/google/go-jsonnet v0.17.0
 	github.com/mattn/go-shellwords v1.0.12
 	github.com/posener/complete v1.2.3
-	github.com/valyala/fastjson v1.6.3
+	github.com/valyala/fastjson v1.6.4
 	github.com/willabides/kongplete v0.3.0
 	go.uber.org/atomic v1.10.0
 	gopkg.in/mattes/go-expand-tilde.v1 v1.0.0-20150330173918-cb884138e64c
