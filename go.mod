@@ -3,7 +3,7 @@ module github.com/kanmu/demitas2
 go 1.19
 
 require (
-	github.com/alecthomas/kong v0.5.0
+	github.com/alecthomas/kong v0.7.1
 	github.com/aws/aws-sdk-go-v2 v1.16.4
 	github.com/aws/aws-sdk-go-v2/config v1.15.7
 	github.com/aws/aws-sdk-go-v2/service/ecs v1.18.7
