@@ -1,6 +1,7 @@
 package definition
 
 import (
+	"encoding/json"
 	"fmt"
 	"path/filepath"
 
@@ -42,6 +43,7 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string, c
 	if profile != "" {
 		confDir = filepath.Join(confDir, profile)
 	}
+
 	ecspressoConf, err := loadEcsecspressoConf(confDir, opts)
 
 	if err != nil {
@@ -88,17 +90,7 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string, c
 		return nil, err
 	}
 
-	var cluster string
-
-	if opts.Cluster != "" {
-		cluster = opts.Cluster
-	} else {
-		cluster, err = ecspressoConf.get("cluster")
-
-		if err != nil {
-			return nil, err
-		}
-	}
+	cluster, err := ecspressoConf.get("cluster")
 
 	return &Definition{
 		EcspressoConfig: ecspressoConf,
@@ -113,6 +105,22 @@ func loadEcsecspressoConf(confDir string, opts *DefinitionOpts) (*EcspressoConfi
 
 	if err != nil {
 		return nil, err
+	}
+
+	if opts.Cluster != "" {
+		js, err := json.Marshal(map[string]string{
+			"cluster": opts.Cluster,
+		})
+
+		if err != nil {
+			panic(err)
+		}
+
+		err = ecspressoConf.patch(string(js))
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	err = ecspressoConf.patch(opts.ConfigOverrides)
