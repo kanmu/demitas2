@@ -34,6 +34,7 @@ func RunCommand(cmdWithArgs []string, silent bool) (string, string, bool, error)
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig)
 	signal.Ignore(syscall.SIGURG)
+	signal.Ignore(syscall.SIGWINCH)
 	var bufOut, bufErr strings.Builder
 
 	go func() {
