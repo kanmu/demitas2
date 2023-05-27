@@ -16,6 +16,7 @@ type DefinitionOpts struct {
 	ServiceOverrides   string `short:"s" help:"JSON/YAML string that overrides ECS service definition."`
 	TaskOverrides      string `short:"t" help:"JSON/YAML string that overrides ECS task definition."`
 	ContainerOverrides string `short:"c" help:"JSON/YAML string that overrides ECS container definition."`
+	Cluster            string `env:"DMTS_CLUSTER" help:"ECS cluster name."`
 }
 
 type Definition struct {
@@ -87,10 +88,16 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string, c
 		return nil, err
 	}
 
-	cluster, err := ecspressoConf.get("cluster")
+	var cluster string
 
-	if err != nil {
-		return nil, err
+	if opts.Cluster != "" {
+		cluster = opts.Cluster
+	} else {
+		cluster, err = ecspressoConf.get("cluster")
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &Definition{
