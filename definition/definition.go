@@ -92,6 +92,10 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string, c
 
 	cluster, err := ecspressoConf.get("cluster")
 
+	if err != nil {
+		return nil, err
+	}
+
 	return &Definition{
 		EcspressoConfig: ecspressoConf,
 		Service:         serviceDef,
