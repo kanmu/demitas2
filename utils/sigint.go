@@ -12,6 +12,7 @@ func TrapInt(proc func() error, teardown0 func()) error {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
 	signal.Ignore(syscall.SIGURG)
+	signal.Ignore(syscall.SIGWINCH)
 	stopped := atomic.NewBool(false)
 
 	teardown := func() {
