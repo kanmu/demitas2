@@ -14,7 +14,7 @@ require (
 	github.com/posener/complete v1.2.3
 	github.com/valyala/fastjson v1.6.4
 	github.com/willabides/kongplete v0.3.0
-	go.uber.org/atomic v1.10.0
+	go.uber.org/atomic v1.11.0
 	gopkg.in/mattes/go-expand-tilde.v1 v1.0.0-20150330173918-cb884138e64c
 )
 
