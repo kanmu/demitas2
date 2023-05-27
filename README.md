@@ -45,6 +45,7 @@ Flags:
   -c, --container-overrides=STRING
                                    JSON/YAML string that overrides ECS container
                                    definition.
+      --cluster=STRING             ECS cluster name ($DMTS_CLUSTER).
 
 Commands:
   run --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet"
