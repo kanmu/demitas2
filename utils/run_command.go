@@ -40,8 +40,10 @@ func RunCommand(cmdWithArgs []string, silent bool) (string, string, bool, error)
 	go func() {
 		for {
 			s := <-sig
-			interrupted.Store(true)
-			_ = cmd.Process.Signal(s)
+			if s != syscall.SIGCHLD {
+				interrupted.Store(true)
+				_ = cmd.Process.Signal(s)
+			}
 		}
 	}()
 
