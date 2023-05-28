@@ -19,7 +19,7 @@ brew install kanmu/tools/demitas2
 ## Usage
 
 ```
-Usage: dmts --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" <command>
+Usage: dmts --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config=ecspresso.yml,ecspresso.json,ecspresso.jsonnet,... --container-def="ecs-container-def.jsonnet" <command>
 
 Flags:
   -h, --help                       Show context-sensitive help.
@@ -31,7 +31,8 @@ Flags:
       --dry-run                    Run ecspresso with dry-run.
   -P, --aws-profile=STRING         AWS profile name ($AWS_PROFILE)
   -d, --conf-dir="~/.demitas"      Config file base dir ($DMTS_CONF_DIR).
-      --config="ecspresso.yml"     ecspresso config file name ($ECSPRESSO_CONF).
+      --config=ecspresso.yml,ecspresso.json,ecspresso.jsonnet,...
+                                   ecspresso config file name ($ECSPRESSO_CONF).
       --container-def="ecs-container-def.jsonnet"
                                    ECS container definition file name
                                    ($DMTS_CONT_DEF).
@@ -48,19 +49,19 @@ Flags:
       --cluster=STRING             ECS cluster name ($DMTS_CLUSTER).
 
 Commands:
-  run --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet"
+  run --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config=ecspresso.yml,ecspresso.json,ecspresso.jsonnet,... --container-def="ecs-container-def.jsonnet"
     Run ECS task.
 
-  exec --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" --command="bash"
+  exec --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config=ecspresso.yml,ecspresso.json,ecspresso.jsonnet,... --container-def="ecs-container-def.jsonnet" --command="bash"
     Run ECS task and execute a command on a container.
 
-  port-forward --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet" --remote-host=STRING --remote-port=UINT --local-port=UINT
+  port-forward --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config=ecspresso.yml,ecspresso.json,ecspresso.jsonnet,... --container-def="ecs-container-def.jsonnet" --remote-host=STRING --remote-port=UINT --local-port=UINT
     Forward a local port to a container.
 
-  profiles --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet"
+  profiles --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config=ecspresso.yml,ecspresso.json,ecspresso.jsonnet,... --container-def="ecs-container-def.jsonnet"
     List profiles.
 
-  install-completions --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config="ecspresso.yml" --container-def="ecs-container-def.jsonnet"
+  install-completions --ecspresso-cmd="ecspresso" --conf-dir="~/.demitas" --config=ecspresso.yml,ecspresso.json,ecspresso.jsonnet,... --container-def="ecs-container-def.jsonnet"
     Install shell completions
 
 Run "dmts <command> --help" for more information on a command.

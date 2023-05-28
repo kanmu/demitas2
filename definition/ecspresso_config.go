@@ -21,14 +21,18 @@ func newEcspressoConfig(path string) (*EcspressoConfig, error) {
 		return nil, fmt.Errorf("failed to load ecspresso config: %w: %s", err, path)
 	}
 
-	js, err := utils.YAMLToJSON(content)
+	if strings.HasSuffix(path, ".yml") || strings.HasSuffix(path, ".yaml") {
+		content, err = utils.YAMLToJSON(content)
+	} else if strings.HasSuffix(path, ".jsonnet") || strings.HasSuffix(path, ".yaml") {
+		content, err = utils.EvaluateJsonnet(path)
+	}
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse ecspresso config: %w: %s", err, path)
 	}
 
 	ecsConf := &EcspressoConfig{
-		Content: js,
+		Content: content,
 	}
 
 	return ecsConf, nil

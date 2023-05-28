@@ -3,21 +3,23 @@ package definition
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/kanmu/demitas2/utils"
 	tilde "gopkg.in/mattes/go-expand-tilde.v1"
 )
 
 type DefinitionOpts struct {
-	ConfDir            string `env:"DMTS_CONF_DIR" short:"d" required:"" default:"~/.demitas" help:"Config file base dir."`
-	Config             string `env:"ECSPRESSO_CONF" required:"" default:"ecspresso.yml" help:"ecspresso config file name."`
-	ContainerDef       string `env:"DMTS_CONT_DEF" required:"" default:"ecs-container-def.jsonnet" help:"ECS container definition file name."`
-	ConfigOverrides    string `short:"e" help:"JSON/YAML string that overrides ecspresso config."`
-	ServiceOverrides   string `short:"s" help:"JSON/YAML string that overrides ECS service definition."`
-	TaskOverrides      string `short:"t" help:"JSON/YAML string that overrides ECS task definition."`
-	ContainerOverrides string `short:"c" help:"JSON/YAML string that overrides ECS container definition."`
-	Cluster            string `env:"DMTS_CLUSTER" help:"ECS cluster name."`
+	ConfDir            string   `env:"DMTS_CONF_DIR" short:"d" required:"" default:"~/.demitas" help:"Config file base dir."`
+	Config             []string `env:"ECSPRESSO_CONF" required:"" default:"ecspresso.yml,ecspresso.json,ecspresso.jsonnet" help:"ecspresso config file name."`
+	ContainerDef       string   `env:"DMTS_CONT_DEF" required:"" default:"ecs-container-def.jsonnet" help:"ECS container definition file name."`
+	ConfigOverrides    string   `short:"e" help:"JSON/YAML string that overrides ecspresso config."`
+	ServiceOverrides   string   `short:"s" help:"JSON/YAML string that overrides ECS service definition."`
+	TaskOverrides      string   `short:"t" help:"JSON/YAML string that overrides ECS task definition."`
+	ContainerOverrides string   `short:"c" help:"JSON/YAML string that overrides ECS container definition."`
+	Cluster            string   `env:"DMTS_CLUSTER" help:"ECS cluster name."`
 }
 
 type Definition struct {
@@ -105,7 +107,21 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string, c
 }
 
 func loadEcsecspressoConf(confDir string, opts *DefinitionOpts) (*EcspressoConfig, error) {
-	ecspressoConf, err := newEcspressoConfig(filepath.Join(confDir, opts.Config))
+	var cfgFile string
+
+	for _, f := range opts.Config {
+		if _, err := os.Stat(filepath.Join(confDir, f)); err != nil {
+			continue
+		}
+
+		cfgFile = filepath.Join(confDir, f)
+	}
+
+	if cfgFile == "" {
+		return nil, fmt.Errorf("ecspresso config file not found: %s", filepath.Join(confDir, strings.Join(opts.Config, ",")))
+	}
+
+	ecspressoConf, err := newEcspressoConfig(cfgFile)
 
 	if err != nil {
 		return nil, err
