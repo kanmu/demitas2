@@ -50,8 +50,10 @@ func (taskDef *TaskDefinition) patch(overrides string, containerDef *ContainerDe
 		}
 	}
 
-	containerDefinitions := fmt.Sprintf(`{"containerDefinitions":[%s]}`, string(containerDef.Content))
-	patchedContent, err = jsonpatch.MergePatch(patchedContent, []byte(containerDefinitions))
+	if containerDef != nil {
+		containerDefinitions := fmt.Sprintf(`{"containerDefinitions":[%s]}`, string(containerDef.Content))
+		patchedContent, err = jsonpatch.MergePatch(patchedContent, []byte(containerDefinitions))
+	}
 
 	if err != nil {
 		return fmt.Errorf("failed to patch containerDefinitions: %w", err)
