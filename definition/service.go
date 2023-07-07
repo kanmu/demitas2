@@ -39,7 +39,7 @@ func (svrDef *ServiceDefinition) patch(overrides string) error {
 		return fmt.Errorf("failed to patch ECS service definition: %w", err)
 	}
 
-	patchedContent, err = jsonpatch.MergePatch(svrDef.Content, []byte(`{"enableExecuteCommand": true}`))
+	patchedContent, err = jsonpatch.MergePatch(patchedContent, []byte(`{"enableExecuteCommand": true}`))
 
 	if err != nil {
 		return fmt.Errorf("failed to enable ECS Exec: %w", err)
