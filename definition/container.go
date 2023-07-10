@@ -114,6 +114,10 @@ func (containerDef *ContainerDefinition) patch(overrides string, command string,
 
 		patchedContent0, err = jsonpatch.MergePatch(
 			patchedContent0, []byte(`{"environment":[`+strings.Join(strEnvs, ",")+`]}`))
+
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	var patchedContent []byte
