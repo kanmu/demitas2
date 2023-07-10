@@ -90,6 +90,36 @@ func (containerDef *ContainerDefinition) patch(overrides string, command string,
 		}
 	}
 
+	{
+		var p fastjson.Parser
+		v, err := p.ParseBytes(patchedContent0)
+
+		if err != nil {
+			panic(err)
+		}
+
+		envs := v.GetArray("environment")
+		demitasEnv, err := fastjson.Parse(`{"environment":[{"name":"DEMITAS","value":"true"}]}`)
+
+		if err != nil {
+			panic(err)
+		}
+
+		envs = append(envs, demitasEnv.GetArray("environment")...)
+		strEnvs := []string{}
+
+		for _, e := range envs {
+			strEnvs = append(strEnvs, e.String())
+		}
+
+		patchedContent0, err = jsonpatch.MergePatch(
+			patchedContent0, []byte(`{"environment":[`+strings.Join(strEnvs, ",")+`]}`))
+
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	var patchedContent []byte
 
 	if overrides != "" {
