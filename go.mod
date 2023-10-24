@@ -5,8 +5,8 @@ go 1.19
 require (
 	github.com/alecthomas/kong v0.8.1
 	github.com/aws/aws-sdk-go-v2 v1.21.2
-	github.com/aws/aws-sdk-go-v2/config v1.18.45
-	github.com/aws/aws-sdk-go-v2/service/ecs v1.30.3
+	github.com/aws/aws-sdk-go-v2/config v1.19.0
+	github.com/aws/aws-sdk-go-v2/service/ecs v1.30.4
 	github.com/evanphx/json-patch v5.7.0+incompatible
 	github.com/goccy/go-yaml v1.11.2
 	github.com/google/go-jsonnet v0.20.0
