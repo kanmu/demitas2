@@ -6,8 +6,8 @@ require (
 	github.com/alecthomas/kong v0.8.1
 	github.com/aws/aws-sdk-go-v2 v1.24.1
 	github.com/aws/aws-sdk-go-v2/config v1.26.3
-	github.com/aws/aws-sdk-go-v2/service/ecs v1.36.0
-	github.com/evanphx/json-patch v5.7.0+incompatible
+	github.com/aws/aws-sdk-go-v2/service/ecs v1.37.0
+	github.com/evanphx/json-patch v5.8.0+incompatible
 	github.com/goccy/go-yaml v1.11.2
 	github.com/google/go-jsonnet v0.20.0
 	github.com/mattn/go-shellwords v1.0.12
