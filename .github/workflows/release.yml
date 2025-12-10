@@ -1,4 +1,4 @@
-name: goreleaser
+name: release
 on:
   push:
     tags:
@@ -8,23 +8,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: 1.19.1
+          go-version-file: go.mod
       - name: Authenticate with GitHub App
-        id: gh-app-auth
-        uses: summerwind/gh-app-auth@main
+        uses: actions/create-github-app-token@v2
+        id: app-token
         with:
           app-id: 244816
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          account: kanmu
+          owner: kanmu
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: latest
-          args: release --rm-dist
+          version: '~> v2'
+          args: release --clean
         env:
-          GITHUB_TOKEN: ${{ steps.gh-app-auth.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
