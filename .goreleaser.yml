@@ -1,3 +1,4 @@
+version: 2
 before:
   hooks:
     - go mod tidy
@@ -13,12 +14,16 @@ builds:
       - darwin
 checksum:
   name_template: "checksums.txt"
-brews:
-  - tap:
+homebrew_casks:
+  - repository:
       owner: kanmu
       name: homebrew-tools
     homepage: https://github.com/kanmu/demitas2
     description: Wrapper for ecspresso that creates task definitions at run time.
     license: MIT
-    install: |
-      bin.install 'dmts'
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/dmts"]
+          end
