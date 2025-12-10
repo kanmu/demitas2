@@ -11,7 +11,7 @@ import (
 type ExecCmd struct {
 	Profile      string `env:"DMTS_PROFILE" short:"p" help:"Demitas profile name."`
 	Command      string `evn:"DMTS_EXEC_COMMAND" required:"" default:"bash" help:"Command to run on a container."`
-	Image        string `env:"DMTS_EXEC_IMAGE" short:"i" default:"public.ecr.aws/lts/ubuntu:latest" help:"Container image."`
+	Image        string `env:"DMTS_EXEC_IMAGE" short:"i" default:"mirror.gcr.io/library/debian:stable-slim" help:"Container image."`
 	Tag          string `help:"Container image tag (use task definition image)."`
 	Cpu          uint64 `help:"Task CPU limit."`
 	Memory       uint64 `help:"Task memory limit."`
@@ -30,7 +30,7 @@ func (cmd *ExecCmd) Run(ctx *demitas2.Context) error {
 		image = ":" + cmd.Tag
 	}
 
-	def, err := ctx.DefinitionOpts.Load(cmd.Profile, "sleep infinity", image, cmd.Cpu, cmd.Memory)
+	def, err := ctx.DefinitionOpts.Load(cmd.Profile, "sleep infinity", image, cmd.Cpu, cmd.Memory, true)
 
 	if err != nil {
 		return err

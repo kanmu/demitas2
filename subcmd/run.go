@@ -16,7 +16,7 @@ type RunCmd struct {
 }
 
 func (cmd *RunCmd) Run(ctx *demitas2.Context) error {
-	def, err := ctx.DefinitionOpts.Load(cmd.Profile, cmd.Command, cmd.Image, cmd.Cpu, cmd.Memory)
+	def, err := ctx.DefinitionOpts.Load(cmd.Profile, cmd.Command, cmd.Image, cmd.Cpu, cmd.Memory, true)
 
 	if err != nil {
 		return err

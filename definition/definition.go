@@ -40,7 +40,7 @@ func (opts *DefinitionOpts) ExpandConfDir() string {
 	return confDir
 }
 
-func (opts *DefinitionOpts) Load(profile string, command string, image string, cpu uint64, memory uint64) (*Definition, error) {
+func (opts *DefinitionOpts) Load(profile string, command string, image string, cpu uint64, memory uint64, initProcessEnabled bool) (*Definition, error) {
 	confDir := opts.ExpandConfDir()
 
 	if profile != "" {
@@ -87,7 +87,7 @@ func (opts *DefinitionOpts) Load(profile string, command string, image string, c
 		return nil, err
 	}
 
-	containerDef, err := loadContainerDef(confDir, taskDefFile, opts, overrides, command, image)
+	containerDef, err := loadContainerDef(confDir, taskDefFile, opts, overrides, command, image, initProcessEnabled)
 
 	if err != nil {
 		return nil, err
@@ -225,7 +225,7 @@ func loadTaskDef(confDir string, taskDefFile string, containerDef *ContainerDefi
 	return taskDef, nil
 }
 
-func loadContainerDef(confDir string, taskDefFile string, opts *DefinitionOpts, overrides *Overrides, command string, image string) (*ContainerDefinition, error) {
+func loadContainerDef(confDir string, taskDefFile string, opts *DefinitionOpts, overrides *Overrides, command string, image string, initProcessEnabled bool) (*ContainerDefinition, error) {
 	containerDef, err := newContainerDefinition(filepath.Join(confDir, opts.ContainerDef), filepath.Join(confDir, taskDefFile))
 
 	if err != nil {
@@ -233,14 +233,14 @@ func loadContainerDef(confDir string, taskDefFile string, opts *DefinitionOpts, 
 	}
 
 	if v := overrides.get("container_definition"); v != "" {
-		err = containerDef.patch(v, "", "")
+		err = containerDef.patch(v, "", "", false)
 
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	err = containerDef.patch(opts.ConfigOverrides, command, image)
+	err = containerDef.patch(opts.ConfigOverrides, command, image, initProcessEnabled)
 
 	if err != nil {
 		return nil, err
