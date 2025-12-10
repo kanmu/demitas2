@@ -42,7 +42,7 @@ func newContainerDefinition(path string, taskDefPath string) (*ContainerDefiniti
 	return containerDef, nil
 }
 
-func (containerDef *ContainerDefinition) patch(overrides string, command string, image string) error {
+func (containerDef *ContainerDefinition) patch(overrides string, command string, image string, initProcessEnabled bool) error {
 	overrides = strings.TrimSpace(overrides)
 	patchedContent0, err := jsonpatch.MergePatch(containerDef.Content, []byte(`{"logConfiguration":null}`))
 
@@ -87,6 +87,14 @@ func (containerDef *ContainerDefinition) patch(overrides string, command string,
 
 		if err != nil {
 			return fmt.Errorf("failed to update 'image' in ECS container definition: %w", err)
+		}
+	}
+
+	if initProcessEnabled {
+		patchedContent0, err = jsonpatch.MergePatch(patchedContent0, []byte(`{"linuxParameters":{"initProcessEnabled":true}}`))
+
+		if err != nil {
+			return fmt.Errorf("failed to update 'initProcessEnabled' in ECS container definition: %w", err)
 		}
 	}
 

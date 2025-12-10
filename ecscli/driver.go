@@ -64,16 +64,14 @@ func (dri *Driver) GetContainerId(cluster string, taskId string) (string, error)
 	return *task.Containers[0].RuntimeId, nil
 }
 
-func (dri *Driver) StartPortForwardingSession(cluster string, taskId string, containerId string, remotePort uint, localPort uint) error {
+func (dri *Driver) StartPortForwardingSessionToRemoteHost(cluster string, taskId string, containerId string, remoteHost string, remotePort uint, localPort uint) error {
 	target := fmt.Sprintf("ecs:%s_%s_%s", cluster, taskId, containerId)
-	params := fmt.Sprintf(`{"portNumber":["%d"],"localPortNumber":["%d"]}`, remotePort, localPort)
+	params := fmt.Sprintf(`{"host":["%s"],"portNumber":["%d"],"localPortNumber":["%d"]}`, remoteHost, remotePort, localPort)
 
-	// TODO: Use AWS-StartPortForwardingSessionToRemoteHost
-	//       cf. https://dev.classmethod.jp/articles/aws-ssm-support-remote-host-port-forward/
 	cmdWithArgs := []string{
 		"aws", "ssm", "start-session",
 		"--target", target,
-		"--document-name", "AWS-StartPortForwardingSession",
+		"--document-name", "AWS-StartPortForwardingSessionToRemoteHost",
 		"--parameters", params,
 	}
 
