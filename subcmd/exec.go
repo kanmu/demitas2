@@ -10,7 +10,7 @@ import (
 
 type ExecCmd struct {
 	Profile      string `env:"DMTS_PROFILE" short:"p" help:"Demitas profile name."`
-	Command      string `evn:"DMTS_EXEC_COMMAND" required:"" default:"bash" help:"Command to run on a container."`
+	Command      string `env:"DMTS_EXEC_COMMAND" required:"" default:"bash" help:"Command to run on a container."`
 	Image        string `env:"DMTS_EXEC_IMAGE" short:"i" default:"mirror.gcr.io/library/debian:stable-slim" help:"Container image."`
 	Tag          string `help:"Container image tag (use task definition image)."`
 	Cpu          uint64 `help:"Task CPU limit."`
