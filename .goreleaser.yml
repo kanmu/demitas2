@@ -21,6 +21,8 @@ homebrew_casks:
     homepage: https://github.com/kanmu/demitas2
     description: Wrapper for ecspresso that creates task definitions at run time.
     license: MIT
+    binaries:
+      - dmts
     hooks:
       post:
         install: |
