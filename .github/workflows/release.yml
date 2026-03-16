@@ -14,14 +14,14 @@ jobs:
         with:
           go-version-file: go.mod
       - name: Authenticate with GitHub App
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: 244816
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           owner: kanmu
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+        uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
           version: '~> v2'
