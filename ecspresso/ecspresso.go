@@ -160,7 +160,7 @@ func writeTemporaryConfigs(ecsConf *definition.EcspressoConfig, svrDef *definiti
 }
 
 func findTaskIdFromLog(log string) string {
-	r := regexp.MustCompile(`(?s)Waiting for task ID (\S+)`)
+	r := regexp.MustCompile(`waiting for task until running \[task_id:([[:alnum:]]+)\]`)
 	m := r.FindStringSubmatch(log)
 
 	if len(m) < 2 {
