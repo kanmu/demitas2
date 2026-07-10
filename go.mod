@@ -1,6 +1,6 @@
 module github.com/kanmu/demitas2
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/alecthomas/kong v1.14.0
@@ -34,7 +34,7 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/riywo/loginshell v0.0.0-20200815045211-7d26008be1ab // indirect
-	golang.org/x/crypto v0.45.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
